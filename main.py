@@ -5,7 +5,7 @@ code for parsing command output 'chronyc tracking'
 import datetime
 from typing import Union
 
-status = '''Reference ID    : 0A0A1B32 (10.10.27.50)
+status_synchronized_time = '''Reference ID    : 0A0A1B32 (10.10.27.50)
 Stratum         : 3
 Ref time (UTC)  : Sun Mar 12 20:22:02 2023
 System time     : 0.000072261 seconds fast of NTP time
@@ -20,7 +20,7 @@ Update interval : 521.0 seconds
 Leap status     : Normal
 '''
 
-status_error = '''Reference ID    : 0000000 ()
+status_synchronized_time_with_errors = '''Reference ID    : 0000000 ()
 Stratum         : 3
 Ref time (UTC)  : Thu Jan 01 00:00:00 1970
 System time     : 0.000000000 seconds slow of NTP time
@@ -35,22 +35,24 @@ Update interval : 65.2 seconds
 Leap status     : Not synchronised
 '''
 
-status_dict = {}
 
-for element in status.split('\n'):
-    if element:
-        key, value = element.split(': ')
-        status_key = key.strip()
-        status_value = value.strip()
-        status_dict[status_key] = status_value
+def get_parced_status_synchronized_time(status__server_synchronized_time: str) -> dict:
+
+    status_server_data_to_values = {}
+
+    for line in status__server_synchronized_time.split('\n'):
+        if line:
+            key, value = line.split(': ')
+            stripped_key = key.strip()
+            stripped_value = value.strip()
+            status_server_data_to_values[stripped_key] = stripped_value
+
+    return status_server_data_to_values
 
 
 def get_reference_id(ref_id: str) -> Union[str, None]:
     id_second_part = ref_id.split()[1][1:-1]
-    if not id_second_part:
-        return None
-    else:
-        return id_second_part
+    return id_second_part if id_second_part else None
 
 
 def get_reference_time(ref_time_utc: str) -> datetime:
@@ -74,10 +76,19 @@ def get_next_synchronize_time(reference_time_utc: str, time_interval: str) -> da
     return synchronize_timestamp
 
 
-ref_time = get_reference_time(status_dict['Ref time (UTC)'])
-reference_id = get_reference_id(status_dict['Reference ID'])
-next_synchronize_time = get_next_synchronize_time(status_dict['Ref time (UTC)'], status_dict['Update interval'])
+status_synchronized_time_dict = get_parced_status_synchronized_time(status_synchronized_time)
 
-print(reference_id)
-print(ref_time)
-print(next_synchronize_time)
+ref_time = get_reference_time(status_synchronized_time_dict['Ref time (UTC)'])
+reference_id = get_reference_id(status_synchronized_time_dict['Reference ID'])
+next_synchronize_time = get_next_synchronize_time(status_synchronized_time_dict['Ref time (UTC)'],
+                                                  status_synchronized_time_dict['Update interval'])
+
+
+def main():
+    print(reference_id)
+    print(ref_time)
+    print(next_synchronize_time)
+
+
+if __name__ == "__main__":
+    main()
