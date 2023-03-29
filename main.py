@@ -5,7 +5,7 @@ code for parsing command output 'chronyc tracking'
 import datetime
 from typing import Union
 
-status_synchronized_time = '''Reference ID    : 0A0A1B32 (10.10.27.50)
+synchronised_time = '''Reference ID    : 0A0A1B32 (10.10.27.50)
 Stratum         : 3
 Ref time (UTC)  : Sun Mar 12 20:22:02 2023
 System time     : 0.000072261 seconds fast of NTP time
@@ -20,7 +20,7 @@ Update interval : 521.0 seconds
 Leap status     : Normal
 '''
 
-status_synchronized_time_with_errors = '''Reference ID    : 0000000 ()
+non_synchronised_time = '''Reference ID    : 0000000 ()
 Stratum         : 3
 Ref time (UTC)  : Thu Jan 01 00:00:00 1970
 System time     : 0.000000000 seconds slow of NTP time
@@ -76,7 +76,7 @@ def get_next_synchronize_time(reference_time_utc: str, time_interval: str) -> da
     return synchronize_timestamp
 
 
-status_synchronized_time_dict = get_parced_status_synchronized_time(status_synchronized_time)
+status_synchronized_time_dict = get_parced_status_synchronized_time(synchronised_time)
 
 ref_time = get_reference_time(status_synchronized_time_dict['Ref time (UTC)'])
 reference_id = get_reference_id(status_synchronized_time_dict['Reference ID'])
