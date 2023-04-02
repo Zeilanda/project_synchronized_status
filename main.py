@@ -1,5 +1,5 @@
 """
-code for parsing command output 'chronyc tracking'
+code for parsing command output 'chronic tracking'
 """
 
 import datetime
@@ -34,6 +34,10 @@ Root dispersion : 0.019596824 seconds
 Update interval : 65.2 seconds
 Leap status     : Not synchronised
 '''
+
+REF_TIME_UTC = 'Ref time (UTC)'
+REFERENCE_ID = 'Reference ID'
+UPDATE_INTERVAL = 'Update interval'
 
 
 def _parse_time_synchronization_status(status__server_synchronized_time: str) -> dict[str, str]:
@@ -70,25 +74,22 @@ def _get_next_synchronize_time(reference_time_utc: str, time_interval: str) -> O
         return None
 
     ref_time_datetime = datetime.datetime.strptime(reference_time_utc, '%a %b %d %H:%M:%S %Y')
-    update_interval = float(time_interval.split()[0])
-    synchronize_timestamp = float(ref_time_datetime.timestamp()) + update_interval
+    update_interval_float = float(time_interval.split()[0])
+    synchronize_timestamp = float(ref_time_datetime.timestamp()) + update_interval_float
     return synchronize_timestamp
 
 
-status_synchronized_time_dict = _parse_time_synchronization_status(synchronised_time)
-
-
-def get_result_status_attributes(ref_time, ref_id, update_interval):
-    reference_time = _get_reference_time(ref_time)
-    reference_id = _get_reference_id(ref_id)
-    next_synchronize_time = _get_next_synchronize_time(ref_time, update_interval)
+def get_status_parameters(chronic_tracking_output: str) -> tuple[str, float, float]:
+    status_synchronized_time_dict = _parse_time_synchronization_status(chronic_tracking_output)
+    reference_time = _get_reference_time(status_synchronized_time_dict[REF_TIME_UTC])
+    reference_id = _get_reference_id(status_synchronized_time_dict[REFERENCE_ID])
+    next_synchronize_time = _get_next_synchronize_time(status_synchronized_time_dict[REF_TIME_UTC],
+                                                       status_synchronized_time_dict[UPDATE_INTERVAL])
     return reference_id, reference_time, next_synchronize_time
 
 
 def main():
-    print(get_result_status_attributes(status_synchronized_time_dict['Ref time (UTC)'],
-                                       status_synchronized_time_dict['Reference ID'],
-                                       status_synchronized_time_dict['Update interval']))
+    print(get_status_parameters(synchronised_time))
 
 
 if __name__ == "__main__":

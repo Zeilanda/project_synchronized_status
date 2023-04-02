@@ -1,3 +1,6 @@
+
+from main import get_status_parameters
+
 synchronised_time = '''Reference ID    : 0A0A1B32 (10.10.27.50)
 Stratum         : 3
 Ref time (UTC)  : Sun Mar 12 20:22:02 2023
@@ -27,3 +30,11 @@ Root dispersion : 0.019596824 seconds
 Update interval : 65.2 seconds
 Leap status     : Not synchronised
 '''
+
+
+def test_get_correct_status_parameters():
+    assert get_status_parameters(synchronised_time) == ('10.10.27.50', 1678641722.0, 1678642243.0)
+
+
+def test_get_incorrect_status_parameters():
+    assert get_status_parameters(non_synchronised_time) == (None, None, None)
