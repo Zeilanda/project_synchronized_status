@@ -48,13 +48,17 @@ def _get_next_synchronize_time(reference_time_utc: str, time_interval: str) -> O
     return synchronize_timestamp
 
 
-def get_status_parameters(chronic_tracking_output: str) -> tuple[str, float, float]:
+def get_status_parameters(chronic_tracking_output: str) -> tuple[Optional[str], Optional[float], Optional[float]]:
     status_synchronized_time_dict = _parse_time_synchronization_status(chronic_tracking_output)
     reference_time = _get_reference_time(status_synchronized_time_dict[_REF_TIME_UTC])
     reference_id = _get_reference_id(status_synchronized_time_dict[_REFERENCE_ID])
     next_synchronize_time = _get_next_synchronize_time(status_synchronized_time_dict[_REF_TIME_UTC],
                                                        status_synchronized_time_dict[_UPDATE_INTERVAL])
-    return reference_id, reference_time, next_synchronize_time
+    result = (reference_id, reference_time, next_synchronize_time)
+    if None in result:
+        return None, None, None
+    else:
+        return result
 
 
 def main():

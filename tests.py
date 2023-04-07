@@ -1,4 +1,3 @@
-
 from main import get_status_parameters
 
 synchronised_time = '''Reference ID    : 0A0A1B32 (10.10.27.50)
