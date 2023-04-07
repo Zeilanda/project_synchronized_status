@@ -23,6 +23,10 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: "3.10"
+    - name: Set Timezone
+      uses: szenius/set-timezone@v1.2
+      with:
+        timezoneLinux: "Europe/Moscow"
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip

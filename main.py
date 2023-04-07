@@ -5,6 +5,21 @@ code for parsing command output 'chronic tracking'
 import datetime
 from typing import Optional
 
+synchronised_time = '''Reference ID    : 0A0A1B32 (10.10.27.50)
+Stratum         : 3
+Ref time (UTC)  : Sun Mar 12 20:22:02 2023
+System time     : 0.000072261 seconds fast of NTP time
+Last offset     : +0.000203388 seconds
+RMS offset      : 0.000159382 seconds
+Frequency       : 20.877 ppm slow
+Residual freq   : +0.027 ppm
+Skew            : 0.583 ppm
+Root delay      : 0.001047121 seconds
+Root dispersion : 0.020145597 seconds
+Update interval : 521.0 seconds
+Leap status     : Normal
+'''
+
 _REF_TIME_UTC = 'Ref time (UTC)'
 _REFERENCE_ID = 'Reference ID'
 _UPDATE_INTERVAL = 'Update interval'
@@ -62,7 +77,7 @@ def get_status_parameters(chronic_tracking_output: str) -> tuple[Optional[str], 
 
 
 def main():
-    pass
+    print(get_status_parameters(synchronised_time))
 
 
 if __name__ == "__main__":
